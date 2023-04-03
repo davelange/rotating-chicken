@@ -1,157 +1,35 @@
-import Zdog from "zdog";
-import {
-  red,
-  yellow,
-  white,
-  darkGrey,
-  sceneSize,
-  crestData,
-  rotation,
-} from "./constants";
+import { rotation } from "./constants";
+import { illo, negativeEye } from "./chicken";
+import { ZAnimation } from "./animation";
 
-const scene = {
+export const scene = {
   isSpinning: false,
 };
 
-let illo = new Zdog.Illustration({
-  element: ".zdog-canvas",
-  dragRotate: true,
-  resize: true,
-  rotate: { x: rotation.initialX, y: rotation.initialY },
-  onDragStart: function () {
-    scene.isSpinning = false;
-  },
-  onResize: function (width, height) {
-    this.zoom = Math.floor(Math.min(width, height) / sceneSize);
-  },
+const bounceAnim = new ZAnimation({
+  duration: 30,
+  force: 0.8,
 });
 
-let chicken = new Zdog.Anchor({
-  addTo: illo,
-});
-
-let crestGroup = new Zdog.Group({
-  addTo: illo,
-});
-
-crestData.forEach((item) => {
-  new Zdog.Shape({
-    addTo: crestGroup,
-    stroke: 4.5,
-    color: red,
-    ...item,
-  });
-});
-
-let headGroup = new Zdog.Group({
-  addTo: illo,
-});
-
-let head = new Zdog.Hemisphere({
-  stroke: 6,
-  diameter: 15,
-  addTo: headGroup,
-  color: white,
-  rotate: { x: Zdog.TAU / 4 },
-});
-
-let neck = new Zdog.Cylinder({
-  stroke: 6,
-  diameter: 15,
-  length: 14,
-  addTo: headGroup,
-  color: white,
-  frontFace: white,
-  backface: white,
-  rotate: { x: Zdog.TAU / 4, z: Zdog.TAU },
-  translate: { y: 8 },
-});
-
-let beak = new Zdog.Cone({
-  addTo: chicken,
-  diameter: 4,
-  length: 5.5,
-  stroke: 2,
-  color: yellow,
-  backface: yellow,
-  rotate: { y: -Zdog.TAU / 4 },
-  translate: { x: 11, y: 4 },
-});
-
-let eyesGroup = new Zdog.Group({
-  addTo: chicken,
-});
-
-let eye1 = new Zdog.Shape({
-  addTo: eyesGroup,
-  stroke: 1.5,
-  color: darkGrey,
-  translate: { x: 8, y: -1, z: 3 },
-});
-
-let eye2 = eye1.copy({
-  translate: { x: 8, y: -1, z: -3 },
-});
-
-let counterBalance = eye1.copy({
-  translate: { x: 2, y: -1, z: -3 },
-  visible: false,
-});
-
-let negativeEye = new Zdog.Shape({
-  addTo: illo,
-  path: [
-    { x: 8, y: -3, z: -3.4 },
-    { x: 8, y: -3, z: 3.4 },
-  ],
-  stroke: 2,
-  color: white,
-});
-
-let beardThing = new Zdog.Shape({
-  addTo: chicken,
-  stroke: 3.2,
-  path: [
-    { x: 11, y: 9 },
-    { x: 11, y: 11 },
-  ],
-  color: red,
-});
-
-let blinkAnim = {
+const blinkAnim = new ZAnimation({
   duration: 15,
-  frame: 0,
-  running: false,
-  direction: 1,
-  start: () =>
-    setInterval(() => {
-      blinkAnim.running = true;
-    }, 4000),
-  getIncrement: function () {
-    let progress = this.frame / this.duration;
-    let tween = Zdog.easeInOut(progress % 1, 3);
-    return tween * 0.2 * blinkAnim.direction;
-  },
-};
+  force: 0.2,
+  interval: 4000,
+});
 
 function animate() {
   if (scene.isSpinning) {
     illo.rotate.y -= 0.03;
   }
 
+  if (bounceAnim.running) {
+    illo.translate.y -= bounceAnim.getIncrement();
+    bounceAnim.handleFrame();
+  }
+
   if (blinkAnim.running) {
-    blinkAnim.frame++;
     negativeEye.translate.y += blinkAnim.getIncrement();
-
-    if (blinkAnim.frame === blinkAnim.duration) {
-      blinkAnim.direction = -1;
-    }
-
-    if (blinkAnim.frame === blinkAnim.duration * 2) {
-      blinkAnim.frame = 0;
-      blinkAnim.running = false;
-      blinkAnim.direction = 1;
-    }
+    blinkAnim.handleFrame();
   }
 
   illo.updateRenderGraph();
@@ -182,8 +60,13 @@ function addPointerListen() {
     if (yMotion !== null)
       illo.rotate.x = rotation.initialX + yMotion * rotation.step;
   });
+
+  document.addEventListener("keydown", (evt) => {
+    if (evt.code === "Space") {
+      bounceAnim.start();
+    }
+  });
 }
 
 addPointerListen();
 animate();
-blinkAnim.start();
