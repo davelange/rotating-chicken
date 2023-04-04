@@ -12,7 +12,6 @@ import {
 // main model
 export let model = new Zdog.Illustration({
   element: ".zdog-canvas",
-  dragRotate: true,
   resize: true,
   rotate: { x: rotation.initialX, y: rotation.initialY },
   onResize: function (width, height) {

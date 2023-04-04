@@ -44,13 +44,13 @@ function addPointerListen() {
   }
 
   document.addEventListener("mousemove", (evt) => {
-    const xMotion = calcMotion(window.innerWidth, evt.clientX, 140);
-    const yMotion = calcMotion(window.innerHeight, evt.clientY, 100);
+    const xMotion = calcMotion(window.innerWidth, evt.clientX, 340);
+    const yMotion = calcMotion(window.innerHeight, evt.clientY, 300);
 
     if (xMotion !== null)
-      model.rotate.y = rotation.initialY + xMotion * rotation.step;
+      model.rotate.y = rotation.initialY + xMotion * rotation.xStep;
     if (yMotion !== null)
-      model.rotate.x = rotation.initialX + yMotion * rotation.step;
+      model.rotate.x = rotation.initialX + yMotion * rotation.yStep;
   });
 
   document.addEventListener("keydown", (evt) => {

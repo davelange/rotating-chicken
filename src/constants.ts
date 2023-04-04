@@ -10,7 +10,8 @@ export const red = "#f5594e";
 export let rotation = {
   initialY: Zdog.TAU / 4,
   initialX: -Zdog.TAU / 1,
-  step: Zdog.TAU / 48,
+  xStep: Zdog.TAU / 100,
+  yStep: Zdog.TAU / 200,
 };
 export const crestData = [
   {
