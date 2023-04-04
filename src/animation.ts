@@ -1,4 +1,6 @@
-import Zdog from "zdog";
+function easeOutCirc(x: number): number {
+  return Math.sqrt(1 - Math.pow(x - 1, 2));
+}
 
 export class ZAnimation {
   duration: number;
@@ -7,6 +9,7 @@ export class ZAnimation {
   force: number;
   running = false;
   points: number[] = [];
+  easeAcc = 0;
 
   constructor(options: { duration: number; force: number; interval?: number }) {
     this.duration = options.duration;
@@ -45,11 +48,18 @@ export class ZAnimation {
     }
   }
 
+  calcEasedValue() {
+    const progressDecimal = (this.frame * 100) / this.duration / 100;
+    const easedVal = easeOutCirc(progressDecimal);
+    const frameEase = easedVal - this.easeAcc;
+    const val = frameEase * this.force;
+    this.easeAcc += frameEase;
+    this.points.push(val);
+  }
+
   getIncrement() {
     if (this.points.length <= this.duration) {
-      let progress = this.frame / this.duration;
-      let tween = Zdog.easeInOut(progress % 1, 5);
-      this.points.push(tween);
+      this.calcEasedValue();
     }
 
     let point = this.frame;
@@ -58,6 +68,6 @@ export class ZAnimation {
       point = this.duration - (this.frame - this.duration);
     }
 
-    return this.points[point] * this.force * this.direction;
+    return this.points[point] * this.direction;
   }
 }

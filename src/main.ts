@@ -7,8 +7,8 @@ export const scene = {
 };
 
 const bounceAnim = new ZAnimation({
-  duration: 30,
-  force: 0.8,
+  duration: 20,
+  force: 1.8,
 });
 
 const blinkAnim = new ZAnimation({
