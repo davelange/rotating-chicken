@@ -1,38 +1,30 @@
 import { rotation } from "./constants";
-import { illo, negativeEye } from "./chicken";
+import { model, eyelid } from "./chicken";
 import { ZAnimation } from "./animation";
 
-export const scene = {
-  isSpinning: false,
-};
-
-const bounceAnim = new ZAnimation({
-  duration: 20,
-  force: 1.8,
+const bounce = new ZAnimation({
+  duration: 60,
+  force: 6.8,
 });
 
-const blinkAnim = new ZAnimation({
-  duration: 15,
-  force: 0.2,
+const blink = new ZAnimation({
+  duration: 18,
+  force: 1.4,
   interval: 4000,
 });
 
 function animate() {
-  if (scene.isSpinning) {
-    illo.rotate.y -= 0.03;
+  if (bounce.running) {
+    model.translate.y -= bounce.getIncrement();
+    bounce.handleFrame();
   }
 
-  if (bounceAnim.running) {
-    illo.translate.y -= bounceAnim.getIncrement();
-    bounceAnim.handleFrame();
+  if (blink.running) {
+    eyelid.translate.y += blink.getIncrement();
+    blink.handleFrame();
   }
 
-  if (blinkAnim.running) {
-    negativeEye.translate.y += blinkAnim.getIncrement();
-    blinkAnim.handleFrame();
-  }
-
-  illo.updateRenderGraph();
+  model.updateRenderGraph();
 
   requestAnimationFrame(animate);
 }
@@ -56,15 +48,19 @@ function addPointerListen() {
     const yMotion = calcMotion(window.innerHeight, evt.clientY, 100);
 
     if (xMotion !== null)
-      illo.rotate.y = rotation.initialY + xMotion * rotation.step;
+      model.rotate.y = rotation.initialY + xMotion * rotation.step;
     if (yMotion !== null)
-      illo.rotate.x = rotation.initialX + yMotion * rotation.step;
+      model.rotate.x = rotation.initialX + yMotion * rotation.step;
   });
 
   document.addEventListener("keydown", (evt) => {
     if (evt.code === "Space") {
-      bounceAnim.start();
+      bounce.start();
     }
+  });
+
+  document.addEventListener("click", () => {
+    bounce.start();
   });
 }
 

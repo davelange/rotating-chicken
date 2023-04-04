@@ -9,7 +9,8 @@ import {
   rotation,
 } from "./constants";
 
-export let illo = new Zdog.Illustration({
+// main model
+export let model = new Zdog.Illustration({
   element: ".zdog-canvas",
   dragRotate: true,
   resize: true,
@@ -20,13 +21,14 @@ export let illo = new Zdog.Illustration({
 });
 
 let chicken = new Zdog.Anchor({
-  addTo: illo,
+  addTo: model,
 });
 
 let crestGroup = new Zdog.Group({
-  addTo: illo,
+  addTo: model,
 });
 
+// create all crest shapes
 crestData.forEach((item) => {
   new Zdog.Shape({
     addTo: crestGroup,
@@ -37,10 +39,11 @@ crestData.forEach((item) => {
 });
 
 let headGroup = new Zdog.Group({
-  addTo: illo,
+  addTo: model,
 });
 
-let head = new Zdog.Hemisphere({
+// head
+new Zdog.Hemisphere({
   stroke: 6,
   diameter: 15,
   addTo: headGroup,
@@ -48,7 +51,8 @@ let head = new Zdog.Hemisphere({
   rotate: { x: Zdog.TAU / 4 },
 });
 
-let neck = new Zdog.Cylinder({
+// neck
+new Zdog.Cylinder({
   stroke: 6,
   diameter: 15,
   length: 14,
@@ -60,7 +64,8 @@ let neck = new Zdog.Cylinder({
   translate: { y: 8 },
 });
 
-let beak = new Zdog.Cone({
+// beak
+new Zdog.Cone({
   addTo: chicken,
   diameter: 4,
   length: 5.5,
@@ -71,10 +76,12 @@ let beak = new Zdog.Cone({
   translate: { x: 11, y: 4 },
 });
 
+// eyes group
 let eyesGroup = new Zdog.Group({
   addTo: chicken,
 });
 
+// left eye
 let eye1 = new Zdog.Shape({
   addTo: eyesGroup,
   stroke: 1.5,
@@ -82,17 +89,20 @@ let eye1 = new Zdog.Shape({
   translate: { x: 8, y: -1, z: 3 },
 });
 
-let eye2 = eye1.copy({
+// right eye
+eye1.copy({
   translate: { x: 8, y: -1, z: -3 },
 });
 
-let counterBalance = eye1.copy({
+// invisible shape to balance eyes z index
+eye1.copy({
   translate: { x: 2, y: -1, z: -3 },
   visible: false,
 });
 
-export let negativeEye = new Zdog.Shape({
-  addTo: illo,
+// eyelid
+export let eyelid = new Zdog.Shape({
+  addTo: model,
   path: [
     { x: 8, y: -3, z: -3.4 },
     { x: 8, y: -3, z: 3.4 },
@@ -101,7 +111,8 @@ export let negativeEye = new Zdog.Shape({
   color: white,
 });
 
-let beardThing = new Zdog.Shape({
+// beard thing
+new Zdog.Shape({
   addTo: chicken,
   stroke: 3.2,
   path: [

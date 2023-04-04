@@ -1,9 +1,8 @@
-function easeOutCirc(x: number): number {
-  return Math.sqrt(1 - Math.pow(x - 1, 2));
-}
+import { easeOutBounce, easeOutCirc } from "./easing";
 
 export class ZAnimation {
   duration: number;
+  halfDuration: number;
   direction: 1 | -1 = 1;
   frame = 0;
   force: number;
@@ -13,6 +12,7 @@ export class ZAnimation {
 
   constructor(options: { duration: number; force: number; interval?: number }) {
     this.duration = options.duration;
+    this.halfDuration = Math.round(options.duration / 2);
     this.force = options.force;
 
     if (options.interval) {
@@ -37,37 +37,40 @@ export class ZAnimation {
   handleFrame() {
     this.frame++;
 
-    if (this.frame === this.duration) {
+    if (this.frame === this.halfDuration) {
       this.direction *= -1;
+      this.easeAcc = 0;
+      this.points = [];
     }
 
-    if (this.frame === this.duration * 2) {
+    if (this.frame === this.duration) {
       this.frame = 0;
-      this.running = false;
+      this.easeAcc = 0;
       this.direction = 1;
+      this.stop();
     }
   }
 
   calcEasedValue() {
-    const progressDecimal = (this.frame * 100) / this.duration / 100;
-    const easedVal = easeOutCirc(progressDecimal);
+    const progressDecimal = (this.frame * 100) / this.halfDuration / 100;
+
+    let easedVal = 0;
+
+    if (this.direction === 1) {
+      easedVal = easeOutCirc(progressDecimal);
+    } else {
+      easedVal = easeOutBounce(progressDecimal - 1);
+    }
+
     const frameEase = easedVal - this.easeAcc;
-    const val = frameEase * this.force;
     this.easeAcc += frameEase;
-    this.points.push(val);
+
+    return frameEase * this.force;
   }
 
   getIncrement() {
-    if (this.points.length <= this.duration) {
-      this.calcEasedValue();
-    }
+    const ease = this.calcEasedValue();
 
-    let point = this.frame;
-
-    if (this.direction === -1) {
-      point = this.duration - (this.frame - this.duration);
-    }
-
-    return this.points[point] * this.direction;
+    return ease * this.direction;
   }
 }
