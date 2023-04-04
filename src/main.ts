@@ -1,6 +1,6 @@
 import { rotation } from "./constants";
 import { model, eyelid } from "./chicken";
-import { ZAnimation } from "./animation";
+import { ZAnimation } from "./zanimation";
 
 export type Scene = {
   animations: ZAnimation[];
