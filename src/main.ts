@@ -2,27 +2,77 @@ import { rotation } from "./constants";
 import { model, eyelid } from "./chicken";
 import { ZAnimation } from "./animation";
 
-const bounce = new ZAnimation({
-  duration: 60,
-  force: 6.8,
-});
+export type Scene = {
+  animations: ZAnimation[];
+  runAnimations: () => void;
+};
 
-const blink = new ZAnimation({
+export const scene: Scene = {
+  animations: [],
+  runAnimations: function () {
+    this.animations.forEach((item) => {
+      if (item.running) item.handleFrame();
+    });
+  },
+};
+
+const bounceDown = new ZAnimation({
+  duration: 30,
+  force: 6.8,
+  easing: "easeOutBounce",
+  addTo: scene,
+  apply: (val) => {
+    model.translate.y += val;
+  },
+});
+const bounceUp = new ZAnimation({
+  duration: 20,
+  force: 6.8,
+  easing: "easeOutCirc",
+  addTo: scene,
+  onEnd: () => bounceDown.start(),
+  apply: (val) => {
+    model.translate.y -= val;
+  },
+});
+const blinkUp = new ZAnimation({
+  duration: 22,
+  force: 1.4,
+  easing: "easeOutCirc",
+  addTo: scene,
+  apply: (val) => {
+    eyelid.translate.y -= val;
+  },
+});
+const blinkDown = new ZAnimation({
   duration: 18,
   force: 1.4,
   interval: 4000,
+  easing: "easeOutCirc",
+  addTo: scene,
+  apply: (val) => {
+    eyelid.translate.y += val;
+  },
+  onEnd: () => {
+    blinkUp.start();
+  },
 });
 
 function animate() {
-  if (bounce.running) {
-    model.translate.y -= bounce.getIncrement();
-    bounce.handleFrame();
+  /* if (bounceUp.running) {
+    bounceUp.handleFrame();
   }
 
-  if (blink.running) {
+  if (bounceDown.running) {
+    bounceDown.handleFrame();
+  } */
+
+  scene.runAnimations();
+
+  /* if (blink.running) {
     eyelid.translate.y += blink.getIncrement();
     blink.handleFrame();
-  }
+  } */
 
   model.updateRenderGraph();
 
@@ -55,12 +105,12 @@ function addPointerListen() {
 
   document.addEventListener("keydown", (evt) => {
     if (evt.code === "Space") {
-      bounce.start();
+      bounceUp.start();
     }
   });
 
   document.addEventListener("click", () => {
-    bounce.start();
+    bounceUp.start();
   });
 }
 
