@@ -5,8 +5,6 @@ type Easing = "easeOutCirc" | "easeOutBounce";
 
 export class ZAnimation {
   duration: number;
-  /* halfDuration: number;
-  direction: 1 | -1 = 1; */
   frame = 0;
   force: number;
   running = false;
@@ -53,21 +51,16 @@ export class ZAnimation {
   }
 
   handleFrame() {
+    if (!this.running) return;
+
     this.frame++;
 
-    /* if (this.frame === this.halfDuration) {
-      this.direction *= -1;
-      this.easeAcc = 0;
-      this.points = [];
-    } */
-
-    const val = this.calcEasedValue();
-    this.apply(val);
+    const value = this.calcEasedValue();
+    this.apply(value);
 
     if (this.frame === this.duration) {
       this.frame = 0;
       this.easeAcc = 0;
-      /* this.direction = 1; */
       this.stop();
       this.onEnd?.();
     }
@@ -77,11 +70,6 @@ export class ZAnimation {
     const progressDecimal = (this.frame * 100) / this.duration / 100;
 
     let easedVal = 0;
-
-    /* if (this.direction === 1) {
-    } else {
-      easedVal = easeOutBounce(progressDecimal - 1);
-    } */
 
     switch (this.easing) {
       case "easeOutCirc":
@@ -97,11 +85,5 @@ export class ZAnimation {
     this.easeAcc += frameEase;
 
     return frameEase * this.force;
-  }
-
-  getIncrement() {
-    const ease = this.calcEasedValue();
-
-    return ease /*  * this.direction */;
   }
 }

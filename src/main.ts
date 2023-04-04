@@ -17,7 +17,7 @@ export const scene: Scene = {
 };
 
 const bounceDown = new ZAnimation({
-  duration: 30,
+  duration: 40,
   force: 6.8,
   easing: "easeOutBounce",
   addTo: scene,
@@ -26,7 +26,7 @@ const bounceDown = new ZAnimation({
   },
 });
 const bounceUp = new ZAnimation({
-  duration: 20,
+  duration: 36,
   force: 6.8,
   easing: "easeOutCirc",
   addTo: scene,
@@ -59,25 +59,13 @@ const blinkDown = new ZAnimation({
 });
 
 function animate() {
-  /* if (bounceUp.running) {
-    bounceUp.handleFrame();
-  }
-
-  if (bounceDown.running) {
-    bounceDown.handleFrame();
-  } */
-
   scene.runAnimations();
-
-  /* if (blink.running) {
-    eyelid.translate.y += blink.getIncrement();
-    blink.handleFrame();
-  } */
-
   model.updateRenderGraph();
 
   requestAnimationFrame(animate);
 }
+
+animate();
 
 function addPointerListen() {
   function calcMotion(window: number, pos: number, threshhold: number) {
@@ -115,4 +103,3 @@ function addPointerListen() {
 }
 
 addPointerListen();
-animate();

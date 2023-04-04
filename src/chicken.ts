@@ -13,7 +13,6 @@ import {
 export let model = new Zdog.Illustration({
   element: ".zdog-canvas",
   resize: true,
-  dragRotate: true,
   rotate: { x: rotation.initialX, y: rotation.initialY },
   onResize: function (width, height) {
     this.zoom = Math.floor(Math.min(width, height) / sceneSize);
@@ -34,11 +33,15 @@ crestData.forEach((item) => {
   });
 });
 
+let bodyGroup = new Zdog.Group({
+  addTo: model,
+});
+
 // head
 new Zdog.Hemisphere({
   stroke: 6,
   diameter: 15,
-  addTo: model,
+  addTo: bodyGroup,
   color: white,
   rotate: { x: Zdog.TAU / 4 },
 });
@@ -48,7 +51,7 @@ new Zdog.Cylinder({
   stroke: 6,
   diameter: 15,
   length: 14,
-  addTo: model,
+  addTo: bodyGroup,
   color: white,
   frontFace: white,
   backface: white,
@@ -86,18 +89,12 @@ eye1.copy({
   translate: { x: 8, y: -1, z: -3 },
 });
 
-// invisible shape to balance eyes z index
-eye1.copy({
-  translate: { x: 2, y: -1, z: -3 },
-  visible: false,
-});
-
 // eyelid
 export let eyelid = new Zdog.Shape({
-  addTo: model,
+  addTo: eyesGroup,
   path: [
-    { x: 8, y: -3.2, z: -3.4 },
-    { x: 8, y: -3.2, z: 3.4 },
+    { x: 8, y: -3, z: -3.4 },
+    { x: 8, y: -3, z: 3.4 },
   ],
   stroke: 2,
   color: white,
