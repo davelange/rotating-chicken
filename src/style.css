@@ -13,6 +13,44 @@ body {
 
 canvas {
   display: block;
-  width: 100%;
-  height: 100%;
+  width: 100vw;
+  height: 100vh;
+}
+
+#debug {
+  position: absolute;
+  bottom: 20px;
+  left: 20px;
+  color: #fff;
+}
+
+.hint {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 20px;
+  font-size: 0.9rem;
+  opacity: 0.5;
+  letter-spacing: 0.04rem;
+}
+
+.hint--desktop {
+  display: none;
+}
+
+.key {
+  border: 1px solid #fff;
+  padding: 2px 4px;
+  border-radius: 4px;
+  letter-spacing: 0.06rem;
+  font-size: 0.7rem;
+}
+
+@media screen and (min-width: 40em) {
+  .hint--desktop {
+    display: block;
+  }
+  .hint--mobile {
+    display: none;
+  }
 }

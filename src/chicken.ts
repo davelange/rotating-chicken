@@ -7,7 +7,9 @@ import {
   sceneSize,
   crestData,
   rotation,
+  sceneSizeMobile,
 } from "./constants";
+import { isMobile } from "./utils";
 
 // main model
 export let model = new Zdog.Illustration({
@@ -15,7 +17,9 @@ export let model = new Zdog.Illustration({
   resize: true,
   rotate: { x: rotation.initialX, y: rotation.initialY },
   onResize: function (width, height) {
-    this.zoom = Math.floor(Math.min(width, height) / sceneSize);
+    const size = isMobile() ? sceneSizeMobile : sceneSize;
+
+    this.zoom = Math.floor(Math.min(width, height) / size);
   },
 });
 

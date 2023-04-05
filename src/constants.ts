@@ -1,6 +1,7 @@
 import Zdog from "zdog";
 
-export const sceneSize = 80;
+export const sceneSize = 100;
+export const sceneSizeMobile = 50;
 export const isSpinning = false;
 export const TAU = Zdog.TAU;
 export const white = "#fefefe";
