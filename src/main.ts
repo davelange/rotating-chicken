@@ -13,7 +13,7 @@ export const scene: Scene = {
   animations: [],
   runAnimations: function () {
     this.animations.forEach((item) => {
-      if (item.running) item.handleFrame();
+      item.handleFrame();
     });
   },
 };
@@ -27,6 +27,7 @@ const bounceDown = new ZAnimation({
     model.translate.y += val;
   },
 });
+
 export const bounceUp = new ZAnimation({
   duration: 36,
   force: 6.8,
@@ -37,6 +38,7 @@ export const bounceUp = new ZAnimation({
     model.translate.y -= val;
   },
 });
+
 const blinkUp = new ZAnimation({
   duration: 22,
   force: 1.4,
@@ -46,6 +48,7 @@ const blinkUp = new ZAnimation({
     eyelid.translate.y -= val;
   },
 });
+
 const blinkDown = new ZAnimation({
   duration: 18,
   force: 1.4,
